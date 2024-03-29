@@ -6,15 +6,10 @@ require "ffi"
 module CLD
   extend FFI::Library
 
+  name = FFI::Platform.mac? ? "libcld2.bundle" : FFI.map_library_name("libcld2")
+  specification = Gem::Specification.find_by_name("cld2")
 
-  # Workaround FFI dylib/bundle issue.  See https://github.com/ffi/ffi/issues/42
-  suffix = if FFI::Platform.mac?
-    'bundle'
-  else
-    FFI::Platform::LIBSUFFIX
-  end
-
-  ffi_lib File.join(File.expand_path(File.dirname(__FILE__)), '..', 'ext', 'cld', 'libcld2.' + suffix)
+  ffi_lib File.join(specification.extension_dir, name)
 end
 
 require "cld/encoding.rb"
